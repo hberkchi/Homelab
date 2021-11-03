@@ -1,0 +1,39 @@
+- hosts: localhost
+  tasks:
+      - name: Display the JSON file content
+        shell: cat exf.yaml
+        register: result
+      
+      - name: save the Json data to a Variable as a Fact
+        set_fact: 
+          jsondata: "{{ result.stdout | from_json }}"
+
+      - name: Print Two
+        debug: 
+          msg: "{{ jsondata }}"
+
+      - name: Server Names
+        set_fact:  
+#          servernames:  "{{ jsondata | json_query(jmesquery) }}"
+          servernames:  "{{ jsondata | json_query(jmesquery) }}"
+        vars:
+          #jmesquery: 'domain_definition.domain.servers[*].name'
+          jmesquery: '*.servers[*].name'
+
+      - name: Server Names and Ports
+        set_fact:  
+          serverinfo:  "{{ jsondata | json_query(jmesquery) }}"
+        vars:
+          jmesquery: '*.servers[*].[name, port]'
+      
+      - name: Print all server names
+        debug: 
+          msg: "{{ item}}"
+        with_items: 
+          - "{{ servernames }}"
+
+      - name: Print all server names
+        debug: 
+          msg: "{{ item }}"
+        with_items: 
+         - "{{ serverinfo }}"

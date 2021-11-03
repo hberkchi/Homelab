@@ -1,0 +1,14 @@
+- hosts: localhost
+  tasks:
+  - name: Display the JSON file content
+    shell: cat exf.yaml
+    register: result
+
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      jsondata: "{{ result.stdout | from_json }}"
+
+  - name: Print 
+    debug:
+      msg: "{{ jsondata}}"
+#     msg: "{{ jsondata.domain_definition.domain.cluster}}"

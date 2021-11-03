@@ -1,0 +1,25 @@
+- hosts: localhost
+  tasks:
+  - name: Display the JSON file content
+    shell: cat fic.json 
+    register: jsoncontent
+
+#  - name: save the Json 
+#    set_fact:
+#      jsondata: "{{ jsoncontent.stdout | from_json }}"
+
+  - name: Print
+    debug:
+      msg: "{{ jsoncontent.stdout }}"
+
+  - name: Business Card
+    debug: msg="{{jsoncontent.stdout | json_query(jmesquery)}}"
+    vars:
+#      jmesquery: "[*].{Name: name, Email: email, Phone: phone, CompanyName: company.name, WebSite: website, City: address.city}"
+      jmesquery: "*.name"
+
+
+#    debug: msg="{{ ontapinfo | json_query(jmesquery)}}"
+#    vars:
+#      jmesquery: "ontap_info.vserver_info.*.vserver_name"
+

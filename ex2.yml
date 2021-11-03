@@ -1,0 +1,23 @@
+- hosts: localhost
+  tasks:
+
+  - name: Include vars  into the variable (2.2).
+    include_vars:
+      file: exf.yaml
+      name: domain_definition
+
+  - name: Prints
+    debug:
+      msg:
+      - "des truc a dire "
+      - "{{ domain_definition }}"
+
+
+  - name: Display all ports from cluster1 as a string
+    ansible.builtin.debug:
+      msg: "{{ domain_definition | json_query('domain.server[?cluster==`cluster1`].port') | join(', ') }}"
+
+  - name: Display all cluster names
+    ansible.builtin.debug:
+      var: item
+    loop: "{{ domain_definition | json_query('domain.cluster[*].name') }}"

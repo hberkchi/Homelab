@@ -1,0 +1,42 @@
+- hosts: localhost
+  tasks:
+  - name: Limit Info Gathering to vserver Information as Cluster Admin
+    netapp.ontap.na_ontap_info:
+      hostname: "192.168.1.220"
+      username: "admin"
+      password: "info0101"
+      https: true
+      validate_certs: false
+      gather_subset: vserver_info
+      query:
+        vserver-info:
+          vserver-type: "data"
+      desired_attributes:
+        vserver-info:
+          allowed-protocols:
+            protocol:
+          root-volume:
+          root-volume-aggregate:
+          root-volume-security-style: 
+          snapshot-policy:
+          vserver-name: 
+    register: ontapinfo 
+
+
+  - name: Business Card
+    debug: msg="{{ ontapinfo | json_query(jmesquery)}}"
+    vars:
+#      jmesquery: "ontap_info.vserver_info.*.vserver_name"
+#
+      jmesquery: "ontap_info.vserver_info.*.{Name: vserver_name, Root: root_volume }"
+
+#      jmesquery: "[*].{Name: name, Email: email, Phone: phone, CompanyName: company.name, WebSite: website, City: address.city}"
+
+      
+    #  - name: Collecting UserName and Mobile Number info
+    #    set_fact:
+    #  line: "{{line|default({}) | combine ( {item.vserver_name: item.root_volume}) }}"
+    #with_items: "{{ ontapinfo | json_query('vserver_info')}}"
+
+    #  - name: The Line
+    #debug: var=line

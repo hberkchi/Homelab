@@ -1,0 +1,29 @@
+- hosts: localhost
+  tasks:
+  - name: run ontap info to get offline volumes with dp in the name
+    netapp.ontap.na_ontap_info:
+      hostname: "192.168.1.220"
+      username: "admin"
+      password: "info0101"
+      https: true
+      validate_certs: false
+      gather_subset: volume_info
+      query:
+        volume-attributes:
+          volume-id-attributes:
+            name: 'vol_*'
+      desired_attributes:
+        volume-attributes:
+          volume-id-attributes:
+            name:
+          volume-state-attributes:
+            state: 
+    register: ontap
+  - debug: var=ontap
+
+
+    #  - name: Prints
+    #    debug:
+    #      msg:
+    #      - "Provisioning based on YOUR_KEY which isxxx"
+    #      - "{{ ontap_info }}"

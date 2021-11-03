@@ -1,0 +1,21 @@
+- hosts: localhost
+  tasks:
+
+    - name: Obtain Access Token
+      vars:
+        cm_auth_body:
+          "grant_type": "refresh_token"
+          "refresh_token": "{{cm_refresh_token}}"
+          "client_id": "{{cm_client_id}}"
+      uri:
+        url: https://192.168.1.220/oauth/token
+        method: POST
+        body_format: json
+        return_content: yes
+        body: '{{cm_auth_body|to_json}}'
+        status_code: 200,202,204
+      register: token_response
+      ignore_errors: no
+
+      - name: Create Token String
+        set_fact: token_string="{{ (token_response.content|from_json).token_type }} {{ (token_response.content|from_json).access_token }}"

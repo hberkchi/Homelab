@@ -1,0 +1,27 @@
+- hosts: localhost
+  tasks:
+  - name: Limit Info Gathering to vserver Information as Cluster Admin
+    netapp.ontap.na_ontap_info:
+      hostname: "192.168.1.220"
+      username: "admin"
+      password: "info0101"
+      https: true
+      validate_certs: false
+      gather_subset: vserver_info
+      query:
+        vserver-info:
+          vserver-type: "data"
+      desired_attributes:
+        vserver-info:
+          allowed-protocols:
+            protocol:
+          root-volume:
+          root-volume-aggregate:
+          root-volume-security-style: 
+          snapshot-policy:
+          vserver-name: 
+
+    register: ontap_info
+  - name: Prints two lines of messages, but only if there is an environment value set
+    debug:
+      msg: "{{ ontap_info }}"

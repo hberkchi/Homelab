@@ -1,0 +1,17 @@
+- hosts: localhost
+  tasks:
+  - name: List SVMs
+    netapp.um_info.na_um_svms_info:
+      hostname: "192.168.1.220"
+      username: "admin"
+      password: "info0101"
+      #      https: true
+      validate_certs: false
+    register: ontap_info
+
+  - name: Prints 
+    debug:
+      msg:
+      - "des truc a dire "
+      - "{{ ontap_info }}"
+
