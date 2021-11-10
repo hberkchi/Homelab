@@ -1,0 +1,17 @@
+# main.yml
+- include_tasks: inner.yml
+  loop:
+    - 1
+    - 2
+    - 3
+  loop_control:
+    loop_var: outer_item
+
+# inner.yml
+- name: Print outer and inner items
+  ansible.builtin.debug:
+    msg: "outer item={{ outer_item }} inner item={{ item }}"
+  loop:
+    - a
+    - b
+    - c

@@ -1,0 +1,12 @@
+# main.yml
+
+- hosts: localhost
+  tasks:
+
+  - include_tasks: test2.yml
+    loop:
+      - 1
+      - 2
+      - 3
+    loop_control:
+      loop_var: outer_item

@@ -1,0 +1,4 @@
+
+192.168.1.220, "nfs,cifs,fcp,iscsi,ndmp", svm_01
+192.168.1.220, "nfs,cifs,fcp,iscsi,ndmp", svm_02
+192.168.1.220, "nfs,cifs,fcp,iscsi,ndmp", svm_03

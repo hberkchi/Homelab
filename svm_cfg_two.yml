@@ -1,0 +1,13 @@
+  - name: Collecting svm info to file
+    set_fact:
+      n_protocols='{{item|join(',')}}'
+#      n_protocols: '{{n_protocols|join(item)}}'
+#      n_protocols='{{item}}'
+#      n_protocols={{n_protocols|join(', ')}}
+#ip={{ip|join(', ')}}
+    with_items: "{{ myitem.allowed_protocols.protocol }}"
+
+  - name: Collecting svm info to file
+    lineinfile:
+      path: "{{n_file}}" 
+      line: '{{n_hostname}}, "{{n_protocols}}", {{myitem.vserver_name}}'

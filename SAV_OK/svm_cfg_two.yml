@@ -1,0 +1,5 @@
+  - name: Collecting svm info to file
+    lineinfile:
+      path: "{{n_file}}" 
+      line: '{{n_hostname}}, "{{item}}", {{myitem.vserver_name}}'
+    with_items: "{{ myitem.allowed_protocols.protocol }}"

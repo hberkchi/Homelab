@@ -1,6 +1,4 @@
 - hosts: localhost
-  vars:
-    n_hostname: "192.168.1.220"
   tasks:
   - name: Limit Info Gathering to vserver Information as Cluster Admin
     netapp.ontap.na_ontap_info:
@@ -24,11 +22,12 @@
           vserver-name: 
     register: ontapinfo 
 
-  - name: Collecting svm info to file
+  - name: Collecting svm info
     lineinfile:
       path: ./Input.txt
-      line: '{{n_hostname}}, {{item.vserver_name}}, {{item.root_volume}}, {{item.root_volume_aggregate}}, {{item.root_volume_security_style}}, {{item.snapshot_policy}}, {{item.allowed_protocols.protocol}}' 
+      line: '{{hostname}}, {{item.vserver_name}}, {{item.root_volume}}, {{item.root_volume_aggregate}}, {{item.root-volume-security-style}}, {{item.snapshot-policy}}' 
+      insertbefore: BOF
     with_items: "{{ ontapinfo | json_query('ontap_info.vserver_info.*')}}"
 
-#  - name: The Line
-#    debug: var=line
+  - name: The Line
+    debug: var=line

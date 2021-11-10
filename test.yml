@@ -1,0 +1,24 @@
+# main.yml
+#
+# i
+#
+#
+- hosts: localhost
+
+  tasks:
+
+  - name: Print 111 
+    tasks:
+    - name: Print outer and inner items
+      ansible.builtin.debug:
+        msg: "outer item={{ outer_item }} inner item={{ item }}"
+      loop:
+        - a
+        - b
+        - c
+    loop:
+      - 1
+      - 2
+      - 3
+    loop_control:
+      loop_var: outer_item

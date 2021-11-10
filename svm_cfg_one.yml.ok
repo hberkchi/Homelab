@@ -1,0 +1,60 @@
+---
+#
+# Playbook    : svm_cfg_export_csv.yml
+# Version     : V1.0
+# Author      : HBE
+# Launch      : ansible-playbook svm_cfg_export_csv.yml -e 'ansible_python_interpreter=/usr/bin/python3'
+# Description : export netapp svm config to csv file
+#             : fieldnames: node_IP,"protocols",vsm_root_vol,svm_aggr3,vsm_name,svm_root_vol_type,svm_snapshot-policy
+#             :
+
+- hosts: localhost
+
+  vars:
+    #n_hostname: "10.184.2.121"
+    #n_username: "admin"
+    #n_password: "Bdfbdf11*"
+    n_hostname: "192.168.1.220"
+    n_username: "admin"
+    n_password: "info0101"
+    n_file: "./svm_cfg.csv"
+
+  tasks:
+
+  - name: Creating an empty file
+    file:
+      path: "{{n_file}}" 
+      state: touch
+
+  - name: Limit Info Gathering to vserver Information as Cluster Admin
+    netapp.ontap.na_ontap_info:
+      hostname: "{{n_hostname}}"
+      username: "{{n_username}}"
+      password: "{{n_password}}"
+      https: true
+      validate_certs: false
+      gather_subset: vserver_info
+      query:
+        vserver-info:
+          vserver-type: "data"
+      desired_attributes:
+        vserver-info:
+          allowed-protocols:
+            protocol:
+          root-volume:
+          root-volume-aggregate:
+          root-volume-security-style:
+          snapshot-policy:
+          vserver-name:
+    register: ontap_out
+
+  - name: Collecting svm info to file
+  
+    lineinfile:
+      path: "{{n_file}}" 
+      line: '{{n_hostname}}, "{{myitem.allowed_protocols.protocol|join(",")}}", {{myitem.vserver_name}}'
+
+    with_items: "{{ ontap_out | json_query('ontap_info.vserver_info.*')}}"
+    loop_control:
+      loop_var: myitem
+

@@ -1,6 +1,4 @@
 - hosts: localhost
-  vars:
-    n_hostname: "192.168.1.220"
   tasks:
   - name: Limit Info Gathering to vserver Information as Cluster Admin
     netapp.ontap.na_ontap_info:
@@ -24,11 +22,17 @@
           vserver-name: 
     register: ontapinfo 
 
-  - name: Collecting svm info to file
-    lineinfile:
-      path: ./Input.txt
-      line: '{{n_hostname}}, {{item.vserver_name}}, {{item.root_volume}}, {{item.root_volume_aggregate}}, {{item.root_volume_security_style}}, {{item.snapshot_policy}}, {{item.allowed_protocols.protocol}}' 
-    with_items: "{{ ontapinfo | json_query('ontap_info.vserver_info.*')}}"
 
-#  - name: The Line
-#    debug: var=line
+#  - name: Business Card
+#    debug: msg="{{ ontapinfo | json_query(jmesquery)}}"
+#    vars:
+#      jmesquery: "ontap_info.vserver_info.*.{Name: vserver_name, Root: root_volume }"
+
+      
+  - name: Collecting UserName and Mobile Number info
+    set_fact:
+      line: "{{line|default({}) | combine ( {item.vserver_name: item.root_volume}) }}"
+    with_items: "{{ ontapinfo | json_query('vontap_info.server_info')}}"
+
+  - name: The Line
+    debug: var=line
